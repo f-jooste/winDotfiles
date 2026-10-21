@@ -1,0 +1,103 @@
+{
+    "$help": "https://aka.ms/terminal-documentation",
+    "$schema": "https://aka.ms/terminal-profiles-schema",
+    "actions": [],
+    "copyFormatting": "none",
+    "copyOnSelect": false,
+    "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+    "keybindings": 
+    [
+        {
+            "id": "Terminal.CopyToClipboard",
+            "keys": "ctrl+c"
+        },
+        {
+            "id": "Terminal.PasteFromClipboard",
+            "keys": "ctrl+v"
+        },
+        {
+            "id": "Terminal.DuplicatePaneAuto",
+            "keys": "alt+shift+d"
+        }
+    ],
+    "newTabMenu": 
+    [
+        {
+            "type": "remainingProfiles"
+        }
+    ],
+    "profiles": 
+    {
+        "defaults": {
+            "colorScheme": "Kanagawa Dragon",
+            "font": {
+                "face": "JetBrainsMono Nerd Font"
+            }
+        },
+        "list": 
+        [
+            {
+                "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "hidden": false,
+                "name": "Windows PowerShell"
+            },
+            {
+                "commandline": "%SystemRoot%\\System32\\cmd.exe",
+                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                "hidden": false,
+                "name": "Command Prompt"
+            },
+            {
+                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+                "hidden": false,
+                "name": "Azure Cloud Shell",
+                "source": "Windows.Terminal.Azure"
+            },
+            {
+                "guid": "{5844e27a-92c3-5581-9f44-88c51c8b7d3e}",
+                "hidden": false,
+                "name": "Developer Command Prompt for VS 18",
+                "source": "Windows.Terminal.VisualStudio"
+            },
+            {
+                "guid": "{f5203a8a-faae-5e44-8e06-8d28dc90c29c}",
+                "hidden": false,
+                "name": "Developer PowerShell for VS 18",
+                "source": "Windows.Terminal.VisualStudio"
+            },
+            {
+                "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+                "hidden": false,
+                "name": "PowerShell",
+                "source": "Windows.Terminal.PowershellCore"
+            }
+        ]
+    },
+    "schemes": [
+        {
+            "name": "Kanagawa Dragon",
+            "background": "#181616",
+            "foreground": "#c5c9c5",
+            "cursorColor": "#c5c9c5",
+            "selectionBackground": "#2d4f67",
+            "black": "#0d0c0c",
+            "red": "#c4746e",
+            "green": "#8a9a7b",
+            "yellow": "#c4b28a",
+            "blue": "#8ba4b0",
+            "purple": "#a292a3",
+            "cyan": "#8ea4a2",
+            "white": "#c8c093",
+            "brightBlack": "#a6a69c",
+            "brightRed": "#e46876",
+            "brightGreen": "#87a987",
+            "brightYellow": "#e6c384",
+            "brightBlue": "#7fb4ca",
+            "brightPurple": "#938aa9",
+            "brightCyan": "#7aa89f",
+            "brightWhite": "#c5c9c5"
+        }
+    ],
+    "themes": []
+}

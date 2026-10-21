@@ -50,6 +50,9 @@
       "type": "prompt"
     }
   ],
+  "transient_prompt": {
+    "template": "❯ "
+  },
   "final_space": true,
   "version": 4
 }

@@ -6,6 +6,7 @@ $links = @{
   "$env:USERPROFILE\.config\yasb\styles.css"         = "$repo\yasb\styles.css"
   "$env:USERPROFILE\.glzr\glazewm\config.yaml"       = "$repo\glazewm\config.yaml"
   "$env:USERPROFILE\.config\oh-my-posh\marcduiker.omp.json" = "$repo\powershell\marcduiker.omp.json"
+  "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" = "$repo\windows-terminal\settings.json"
   "$env:LOCALAPPDATA\nvim"                           = "$repo\nvim"
   "$([Environment]::GetFolderPath('MyDocuments'))\PowerShell\Microsoft.PowerShell_profile.ps1" = "$repo\powershell\Microsoft.PowerShell_profile.ps1"
 }
