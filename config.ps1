@@ -5,7 +5,9 @@ $links = @{
   "$env:USERPROFILE\.config\yasb\config.yaml"        = "$repo\yasb\config.yaml"
   "$env:USERPROFILE\.config\yasb\styles.css"         = "$repo\yasb\styles.css"
   "$env:USERPROFILE\.glzr\glazewm\config.yaml"       = "$repo\glazewm\config.yaml"
+  "$env:USERPROFILE\.config\oh-my-posh\marcduiker.omp.json" = "$repo\powershell\marcduiker.omp.json"
   "$env:LOCALAPPDATA\nvim"                           = "$repo\nvim"
+  "$([Environment]::GetFolderPath('MyDocuments'))\PowerShell\Microsoft.PowerShell_profile.ps1" = "$repo\powershell\Microsoft.PowerShell_profile.ps1"
 }
 foreach ($l in $links.GetEnumerator()) {
   New-Item -ItemType Directory -Force (Split-Path $l.Key) | Out-Null

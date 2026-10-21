@@ -3,6 +3,9 @@
 $apps = @(
   "AmN.yasb",
   "glzr-io.glazewm",
+  "Microsoft.WindowsTerminal",
+  "Microsoft.PowerShell",
+  "JanDeDobbeleer.OhMyPosh",
   "Neovim.Neovim",
   "DEVCOM.JetBrainsMonoNerdFont",
   # LazyVim dependencies
