@@ -14,6 +14,7 @@ $links = @{
   "$env:USERPROFILE\.config\oh-my-posh\marcduiker.omp.json" = "$repo\powershell\marcduiker.omp.json"
   "$env:LOCALAPPDATA\nvim"                           = "$repo\nvim"
   "$([Environment]::GetFolderPath('MyDocuments'))\PowerShell\Microsoft.PowerShell_profile.ps1" = "$repo\powershell\Microsoft.PowerShell_profile.ps1"
+  "$([Environment]::GetFolderPath('MyDocuments'))\WindowsPowerShell\Microsoft.PowerShell_profile.ps1" = "$repo\powershell\Microsoft.PowerShell_profile.ps1"
 }
 foreach ($l in $links.GetEnumerator()) {
   New-Item -ItemType Directory -Force (Split-Path $l.Key) | Out-Null
@@ -32,3 +33,22 @@ New-Item -ItemType Directory -Force (Split-Path $wt) | Out-Null
 if (Test-Path $wt) { Copy-Item $wt "$wt.bak" -Force }
 Copy-Item "$repo\windows-terminal\settings.json" $wt -Force
 Write-Host "copied $wt"
+
+# Optionally start GlazeWM on login via a Startup folder shortcut.
+if ((Read-Host "Run GlazeWM on startup? (y/n)") -match '^[yY]') {
+  $exe = @(
+    (Get-Command glazewm.exe -ErrorAction SilentlyContinue).Source,
+    "$env:ProgramFiles\glzr.io\GlazeWM\glazewm.exe",
+    "${env:ProgramFiles(x86)}\glzr.io\GlazeWM\glazewm.exe",
+    "$env:LOCALAPPDATA\Programs\glzr.io\GlazeWM\glazewm.exe"
+  ) | Where-Object { $_ -and (Test-Path $_) } | Select-Object -First 1
+  if (-not $exe) { Write-Warning "glazewm.exe not found; skipping startup." }
+  else {
+    $lnk = Join-Path ([Environment]::GetFolderPath('Startup')) "GlazeWM.lnk"
+    $sc = (New-Object -ComObject WScript.Shell).CreateShortcut($lnk)
+    $sc.TargetPath = $exe
+    $sc.WorkingDirectory = Split-Path $exe
+    $sc.Save()
+    Write-Host "added startup $lnk"
+  }
+}
