@@ -41,25 +41,40 @@ function Test-Installed($id) {
   $LASTEXITCODE -eq 0
 }
 
-function Link-Config($path, $target) {
+# One timestamped folder per run; repeat runs never overwrite older backups.
+$backupRoot = Join-Path $env:USERPROFILE "dotfiles-backup\$(Get-Date -Format 'yyyyMMdd-HHmmss')"
+
+function Backup-Config($path) {
+  $rel = ($path -replace '^([A-Za-z]):', '$1') -replace '^[\\/]+', ''
+  $dest = Join-Path $backupRoot $rel
+  New-Item -ItemType Directory -Force (Split-Path $dest) | Out-Null
+  Copy-Item $path $dest -Recurse -Force
+  Write-Host "backed up $path -> $dest"
+}
+
+function Link-Config($path, $target, $backup) {
   New-Item -ItemType Directory -Force (Split-Path $path) | Out-Null
   if (Test-Path $path) {
     $item = Get-Item $path -Force
-    if (-not $item.LinkType) { Move-Item $path "$path.bak" -Force }
-    else { $item.Delete() }
+    if ($item.LinkType) { $item.Delete() }
+    else {
+      if ($backup) { Backup-Config $path }
+      Remove-Item $path -Recurse -Force
+    }
   }
   New-Item -ItemType SymbolicLink -Path $path -Target $target | Out-Null
   Write-Host "linked $path"
 }
 
 foreach ($app in $apps) {
-  if (Test-Installed $app.Id) { Write-Host "$($app.Id) already installed" }
+  $wasInstalled = Test-Installed $app.Id
+  if ($wasInstalled) { Write-Host "$($app.Id) already installed" }
   else {
     Write-Host "Installing $($app.Id)..."
     winget install --id $app.Id --exact --source winget --accept-package-agreements --accept-source-agreements
   }
   if (-not $app.Links) { continue }
-  foreach ($l in $app.Links.GetEnumerator()) { Link-Config $l.Key $l.Value }
+  foreach ($l in $app.Links.GetEnumerator()) { Link-Config $l.Key $l.Value $wasInstalled }
 }
 
 # Windows Terminal copy and GlazeWM startup (moving into the app flow in a later step).
