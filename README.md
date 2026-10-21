@@ -20,4 +20,5 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 ## Notes
 - Existing non-link files are moved to `<name>.bak` before linking.
 - Windows Terminal edits made in its UI are not synced back. Copy the live `settings.json` into `windows-terminal/` by hand.
+- PRs merged into `dev` auto-close issues named in the description (`Closes`/`Fixes`/`Resolves #N`), since GitHub only does this natively for the default branch (`main`). See `.github/workflows/close-issues-on-merge.yml`.
 - Open a new terminal tab after install so the prompt and font load.
