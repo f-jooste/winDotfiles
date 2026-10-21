@@ -1,8 +1,8 @@
 # dotfiles
 Windows configs: YASB, GlazeWM, Neovim (LazyVim), PowerShell 7 + Oh My Posh, Windows Terminal.
 
-- `install.ps1`: installs all apps with winget, then runs `config.ps1`. Use on a fresh PC.
-- `config.ps1`: only links/copies the configs. Use when apps are already installed.
+- `install.ps1`: per app, installs via winget if missing, then links its configs. Aborts if symlinks unavailable.
+- `config.ps1`: Windows Terminal copy + GlazeWM startup prompt (called by install.ps1; to be folded in).
 
 Run either in PowerShell as Administrator. If scripts are blocked:
 
