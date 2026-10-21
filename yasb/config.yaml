@@ -44,8 +44,8 @@ bars:
       - pomodoro
       - glazewm_binding_mode
       center:
-      - clock
       - audio_visualizer
+      - clock
       - media
       right:
       - systray
@@ -82,14 +82,14 @@ widgets:
   clock:
     type: yasb.clock.ClockWidget
     options:
-      label: '{%a, %d %b %H:%M}<span>{alarm}</span>'
-      label_alt: '{%a, %d %b %H:%M}'
+      label: '{%H:%M}<span>{alarm}</span>'
+      label_alt: '{%H:%M}'
       timezones: []
       calendar:
         blur: false
         round_corners: true
         alignment: center
-        offset_left: 110
+        offset_left: 0
         direction: down
         extended: false
         show_years: true
