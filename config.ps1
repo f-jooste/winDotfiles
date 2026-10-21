@@ -1,6 +1,12 @@
 # Links configs into place. Apps must already be installed (see install.ps1).
 # Run in PowerShell as Administrator (or enable Developer Mode) so symlinks work.
 $repo = $PSScriptRoot
+
+# Abort before touching anything if symlinks can't be created (not admin / no Developer Mode).
+$probe = Join-Path $env:TEMP "dotfiles-link-probe"
+Remove-Item $probe -Force -ErrorAction SilentlyContinue
+try { New-Item -ItemType SymbolicLink -Path $probe -Target $PSCommandPath -ErrorAction Stop | Out-Null; Remove-Item $probe -Force }
+catch { Write-Error "Cannot create symlinks. Run as Administrator or enable Developer Mode."; exit 1 }
 $links = @{
   "$env:USERPROFILE\.config\yasb\config.yaml"        = "$repo\yasb\config.yaml"
   "$env:USERPROFILE\.config\yasb\styles.css"         = "$repo\yasb\styles.css"
