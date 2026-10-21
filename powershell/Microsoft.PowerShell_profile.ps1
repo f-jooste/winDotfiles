@@ -4,7 +4,9 @@ oh-my-posh init pwsh --config "$env:USERPROFILE\.config\oh-my-posh\marcduiker.om
 if ($PSStyle) { $PSStyle.FileInfo.Directory = "$([char]27)[38;2;139;164;176m" }
 
 # Aliases
-Set-Alias -Name ls -Value Get-ChildItem -Force
-Set-Alias -Name dir -Value Get-ChildItem -Force
-Set-Alias -Name rm -Value Remove-Item -Force
-Set-Alias -Name del -Value Remove-Item -Force
+# Functions, since aliases can't pass -Force. AllScope aliases (dir, del) must be removed first.
+foreach ($a in 'ls', 'dir', 'rm', 'del') { Remove-Item "Alias:$a" -Force -ErrorAction SilentlyContinue }
+function ls { Get-ChildItem -Force @args }
+function dir { Get-ChildItem -Force @args }
+function rm { Remove-Item -Force @args }
+function del { Remove-Item -Force @args }
