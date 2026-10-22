@@ -34,7 +34,7 @@ $apps = @(
   } },
   @{ Id = "Fastfetch-cli.Fastfetch"; Links = @{
       "$env:USERPROFILE\.config\fastfetch\config.jsonc" = "$repo\fastfetch\config.jsonc"
-  } },
+  }; Post = { Set-FastfetchOnLaunch } },
   @{ Id = "DEVCOM.JetBrainsMonoNerdFont" },
   # LazyVim dependencies
   @{ Id = "Git.Git" },
@@ -88,6 +88,19 @@ function Add-GlazeStartup {
   $sc.WorkingDirectory = Split-Path $exe
   $sc.Save()
   Write-Host "added startup $lnk"
+}
+
+# Marker file read by the PowerShell profile; lives outside the repo. "y" creates it, "n" removes it.
+function Set-FastfetchOnLaunch {
+  $marker = "$env:USERPROFILE\.config\fastfetch\run-on-launch"
+  if ((Read-Host "Run fastfetch on each terminal launch? (y/n)") -match '^[yY]') {
+    New-Item -ItemType Directory -Force (Split-Path $marker) | Out-Null
+    New-Item -ItemType File -Force $marker | Out-Null
+    Write-Host "fastfetch will run on launch"
+  } else {
+    Remove-Item $marker -Force -ErrorAction SilentlyContinue
+    Write-Host "fastfetch will not run on launch"
+  }
 }
 
 function Copy-Config($path, $source, $backup) {
