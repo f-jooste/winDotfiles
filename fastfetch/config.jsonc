@@ -1,17 +1,34 @@
 {
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": {
+    "type": "builtin",
+    "source": "Windows 7",
+    "padding": { "right": 4 }
+  },
+  "display": {
+    "separator": " ",
+    "constants": ["──────────────────────────────────────────────"]
+  },
   "modules": [
     "title",
-    "separator",
-    "os",
-    "host",
-    "kernel",
-    "uptime",
-    "shell",
-    "terminal",
-    "cpu",
-    "gpu",
-    "memory",
-    "disk"
+    {
+      "type": "custom",
+      "format": "┌{$1}┐"
+    },
+    { "type": "os", "key": "\uf17a", "keyColor": "cyan" },
+    { "type": "cpu", "key": "\uf2db", "keyColor": "magenta", "format": "{name} ({cores-logical}) @ {freq-max}" },
+    { "type": "board", "key": "\uf085", "keyColor": "yellow" },
+    { "type": "memory", "key": "󰍛", "keyColor": "green" },
+    { "type": "disk", "key": "\uf0a0", "keyColor": "white", "folders": "C:\\" },
+    {
+      "type": "custom",
+      "format": "└{$1}┘"
+    },
+    "break",
+    {
+      "type": "colors",
+      "symbol": "circle",
+      "paddingLeft": 2
+    }
   ]
 }
