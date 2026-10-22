@@ -97,12 +97,18 @@ function Copy-Config($path, $source, $backup) {
   Write-Host "copied $path"
 }
 
+# Pick up PATH entries added by installers so new commands work in this session (and its parent shell if dot-sourced).
+function Update-SessionPath {
+  $env:Path = (@('User', 'Machine') | ForEach-Object { [Environment]::GetEnvironmentVariable('Path', $_) }) -join ';'
+}
+
 foreach ($app in $apps) {
   $wasInstalled = Test-Installed $app.Id
   if ($wasInstalled) { Write-Host "$($app.Id) already installed" }
   else {
     Write-Host "Installing $($app.Id)..."
     winget install --id $app.Id --exact --source winget --accept-package-agreements --accept-source-agreements
+    Update-SessionPath
   }
   if ($app.Links) { foreach ($l in $app.Links.GetEnumerator()) { Link-Config $l.Key $l.Value $wasInstalled } }
   if ($app.Copies) { foreach ($c in $app.Copies.GetEnumerator()) { Copy-Config $c.Key $c.Value $wasInstalled } }
