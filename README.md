@@ -1,5 +1,5 @@
 # dotfiles
-Windows configs: YASB, GlazeWM, Neovim (LazyVim), PowerShell 7 + Oh My Posh, Windows Terminal.
+Windows configs: YASB, GlazeWM, Neovim (LazyVim), PowerShell 7 + Oh My Posh, Windows Terminal, fastfetch.
 
 `install.ps1` is the single entry point. Per app: installs via winget if missing, links its configs (Windows Terminal is copied), and asks whether GlazeWM should run on startup. Aborts if symlinks unavailable.
 
@@ -14,6 +14,7 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 - `glazewm/`: GlazeWM config (symlinked).
 - `nvim/`: LazyVim config with kanagawa (symlinked).
 - `powershell/`: PowerShell 7 profile and Oh My Posh theme `marcduiker` (symlinked).
+- `fastfetch/`: fastfetch starter config (symlinked to `~\.config\fastfetch\config.jsonc`).
 - `windows-terminal/`: Windows Terminal settings with Kanagawa Dragon scheme and JetBrainsMono Nerd Font. Copied, not linked, since Windows Terminal replaces a symlinked `settings.json`.
 
 ## Notes

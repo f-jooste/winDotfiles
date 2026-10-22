@@ -32,6 +32,9 @@ $apps = @(
   @{ Id = "Neovim.Neovim"; Links = @{
       "$env:LOCALAPPDATA\nvim" = "$repo\nvim"
   } },
+  @{ Id = "Fastfetch-cli.Fastfetch"; Links = @{
+      "$env:USERPROFILE\.config\fastfetch\config.jsonc" = "$repo\fastfetch\config.jsonc"
+  } },
   @{ Id = "DEVCOM.JetBrainsMonoNerdFont" },
   # LazyVim dependencies
   @{ Id = "Git.Git" },
