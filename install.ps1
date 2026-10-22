@@ -32,6 +32,9 @@ $apps = @(
   @{ Id = "Neovim.Neovim"; Links = @{
       "$env:LOCALAPPDATA\nvim" = "$repo\nvim"
   } },
+  @{ Id = "Fastfetch-cli.Fastfetch"; Links = @{
+      "$env:USERPROFILE\.config\fastfetch\config.jsonc" = "$repo\fastfetch\config.jsonc"
+  }; Post = { Set-FastfetchOnLaunch } },
   @{ Id = "DEVCOM.JetBrainsMonoNerdFont" },
   # LazyVim dependencies
   @{ Id = "Git.Git" },
@@ -87,11 +90,29 @@ function Add-GlazeStartup {
   Write-Host "added startup $lnk"
 }
 
+# Marker file read by the PowerShell profile; lives outside the repo. "y" creates it, "n" removes it.
+function Set-FastfetchOnLaunch {
+  $marker = "$env:USERPROFILE\.config\fastfetch\run-on-launch"
+  if ((Read-Host "Run fastfetch on each terminal launch? (y/n)") -match '^[yY]') {
+    New-Item -ItemType Directory -Force (Split-Path $marker) | Out-Null
+    New-Item -ItemType File -Force $marker | Out-Null
+    Write-Host "fastfetch will run on launch"
+  } else {
+    Remove-Item $marker -Force -ErrorAction SilentlyContinue
+    Write-Host "fastfetch will not run on launch"
+  }
+}
+
 function Copy-Config($path, $source, $backup) {
   New-Item -ItemType Directory -Force (Split-Path $path) | Out-Null
   if ($backup -and (Test-Path $path)) { Backup-Config $path }
   Copy-Item $source $path -Force
   Write-Host "copied $path"
+}
+
+# Pick up PATH entries added by installers so new commands work in this session (and its parent shell if dot-sourced).
+function Update-SessionPath {
+  $env:Path = (@('User', 'Machine') | ForEach-Object { [Environment]::GetEnvironmentVariable('Path', $_) }) -join ';'
 }
 
 foreach ($app in $apps) {
@@ -100,6 +121,7 @@ foreach ($app in $apps) {
   else {
     Write-Host "Installing $($app.Id)..."
     winget install --id $app.Id --exact --source winget --accept-package-agreements --accept-source-agreements
+    Update-SessionPath
   }
   if ($app.Links) { foreach ($l in $app.Links.GetEnumerator()) { Link-Config $l.Key $l.Value $wasInstalled } }
   if ($app.Copies) { foreach ($c in $app.Copies.GetEnumerator()) { Copy-Config $c.Key $c.Value $wasInstalled } }
