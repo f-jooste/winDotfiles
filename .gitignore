@@ -3,3 +3,6 @@ yasb/yasb_colors.css
 yasb/backup-*/
 glazewm/errors.log
 *.md
+!README.md
+!claude/CLAUDE.md
+!claude/skills/**/*.md

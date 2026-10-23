@@ -9,6 +9,12 @@ Remove-Item $probe -Force -ErrorAction SilentlyContinue
 try { New-Item -ItemType SymbolicLink -Path $probe -Target $PSCommandPath -ErrorAction Stop | Out-Null; Remove-Item $probe -Force }
 catch { Write-Error "Cannot create symlinks. Run as Administrator or enable Developer Mode."; exit 1 }
 
+# Each personal skill dir is linked individually so the app-managed skills\synced dir is left alone.
+$claudeLinks = @{ "$env:USERPROFILE\.claude\CLAUDE.md" = "$repo\claude\CLAUDE.md" }
+Get-ChildItem "$repo\claude\skills" -Directory -ErrorAction Stop | ForEach-Object {
+  $claudeLinks["$env:USERPROFILE\.claude\skills\$($_.Name)"] = $_.FullName
+}
+
 # Each app: winget Id + Links (link path = repo target). Install-only apps have no Links.
 $apps = @(
   @{ Id = "AmN.yasb"; Links = @{
@@ -36,6 +42,10 @@ $apps = @(
       "$env:USERPROFILE\.config\fastfetch\config.jsonc" = "$repo\fastfetch\config.jsonc"
   }; Post = { Set-FastfetchOnLaunch } },
   @{ Id = "DEVCOM.JetBrainsMonoNerdFont" },
+  @{ Id = "Anthropic.Claude" },
+  # Only CLAUDE.md and skills are linked; settings.json holds machine paths so it stays local.
+  # AlwaysBackup: Claude Code may exist from a non-winget install, so winget can't tell if real files are there.
+  @{ Id = "Anthropic.ClaudeCode"; AlwaysBackup = $true; Links = $claudeLinks },
   # LazyVim dependencies
   @{ Id = "Git.Git" },
   @{ Id = "BurntSushi.ripgrep.MSVC" },
@@ -60,8 +70,9 @@ function Backup-Config($path) {
 
 function Link-Config($path, $target, $backup) {
   New-Item -ItemType Directory -Force (Split-Path $path) | Out-Null
-  if (Test-Path $path) {
-    $item = Get-Item $path -Force
+  # Get-Item (not Test-Path) so a dangling symlink is still found and replaced.
+  $item = Get-Item $path -Force -ErrorAction SilentlyContinue
+  if ($item) {
     if ($item.LinkType) { $item.Delete() }
     else {
       if ($backup) { Backup-Config $path }
@@ -123,7 +134,7 @@ foreach ($app in $apps) {
     winget install --id $app.Id --exact --source winget --accept-package-agreements --accept-source-agreements
     Update-SessionPath
   }
-  if ($app.Links) { foreach ($l in $app.Links.GetEnumerator()) { Link-Config $l.Key $l.Value $wasInstalled } }
+  if ($app.Links) { foreach ($l in $app.Links.GetEnumerator()) { Link-Config $l.Key $l.Value ($wasInstalled -or $app.AlwaysBackup) } }
   if ($app.Copies) { foreach ($c in $app.Copies.GetEnumerator()) { Copy-Config $c.Key $c.Value $wasInstalled } }
   if ($app.Post) { & $app.Post }
 }
