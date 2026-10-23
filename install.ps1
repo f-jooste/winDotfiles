@@ -9,6 +9,12 @@ Remove-Item $probe -Force -ErrorAction SilentlyContinue
 try { New-Item -ItemType SymbolicLink -Path $probe -Target $PSCommandPath -ErrorAction Stop | Out-Null; Remove-Item $probe -Force }
 catch { Write-Error "Cannot create symlinks. Run as Administrator or enable Developer Mode."; exit 1 }
 
+# Each personal skill dir is linked individually so the app-managed skills\synced dir is left alone.
+$claudeLinks = @{ "$env:USERPROFILE\.claude\CLAUDE.md" = "$repo\claude\CLAUDE.md" }
+Get-ChildItem "$repo\claude\skills" -Directory -ErrorAction Stop | ForEach-Object {
+  $claudeLinks["$env:USERPROFILE\.claude\skills\$($_.Name)"] = $_.FullName
+}
+
 # Each app: winget Id + Links (link path = repo target). Install-only apps have no Links.
 $apps = @(
   @{ Id = "AmN.yasb"; Links = @{
@@ -37,11 +43,9 @@ $apps = @(
   }; Post = { Set-FastfetchOnLaunch } },
   @{ Id = "DEVCOM.JetBrainsMonoNerdFont" },
   @{ Id = "Anthropic.Claude" },
-  # Only CLAUDE.md is linked; settings.json holds machine paths so it stays local.
-  # AlwaysBackup: Claude Code may exist from a non-winget install, so winget can't tell if a real CLAUDE.md is there.
-  @{ Id = "Anthropic.ClaudeCode"; AlwaysBackup = $true; Links = @{
-      "$env:USERPROFILE\.claude\CLAUDE.md" = "$repo\claude\CLAUDE.md"
-  } },
+  # Only CLAUDE.md and skills are linked; settings.json holds machine paths so it stays local.
+  # AlwaysBackup: Claude Code may exist from a non-winget install, so winget can't tell if real files are there.
+  @{ Id = "Anthropic.ClaudeCode"; AlwaysBackup = $true; Links = $claudeLinks },
   # LazyVim dependencies
   @{ Id = "Git.Git" },
   @{ Id = "BurntSushi.ripgrep.MSVC" },
@@ -66,8 +70,9 @@ function Backup-Config($path) {
 
 function Link-Config($path, $target, $backup) {
   New-Item -ItemType Directory -Force (Split-Path $path) | Out-Null
-  if (Test-Path $path) {
-    $item = Get-Item $path -Force
+  # Get-Item (not Test-Path) so a dangling symlink is still found and replaced.
+  $item = Get-Item $path -Force -ErrorAction SilentlyContinue
+  if ($item) {
     if ($item.LinkType) { $item.Delete() }
     else {
       if ($backup) { Backup-Config $path }
