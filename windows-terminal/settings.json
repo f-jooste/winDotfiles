@@ -30,6 +30,8 @@
     {
         "defaults": {
             "colorScheme": "Kanagawa Dragon",
+            "opacity": 85,
+            "useAcrylic": true,
             "font": {
                 "face": "JetBrainsMono Nerd Font"
             }
