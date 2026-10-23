@@ -36,6 +36,12 @@ $apps = @(
       "$env:USERPROFILE\.config\fastfetch\config.jsonc" = "$repo\fastfetch\config.jsonc"
   }; Post = { Set-FastfetchOnLaunch } },
   @{ Id = "DEVCOM.JetBrainsMonoNerdFont" },
+  @{ Id = "Anthropic.Claude" },
+  # Only CLAUDE.md is linked; settings.json holds machine paths so it stays local.
+  # AlwaysBackup: Claude Code may exist from a non-winget install, so winget can't tell if a real CLAUDE.md is there.
+  @{ Id = "Anthropic.ClaudeCode"; AlwaysBackup = $true; Links = @{
+      "$env:USERPROFILE\.claude\CLAUDE.md" = "$repo\claude\CLAUDE.md"
+  } },
   # LazyVim dependencies
   @{ Id = "Git.Git" },
   @{ Id = "BurntSushi.ripgrep.MSVC" },
@@ -123,7 +129,7 @@ foreach ($app in $apps) {
     winget install --id $app.Id --exact --source winget --accept-package-agreements --accept-source-agreements
     Update-SessionPath
   }
-  if ($app.Links) { foreach ($l in $app.Links.GetEnumerator()) { Link-Config $l.Key $l.Value $wasInstalled } }
+  if ($app.Links) { foreach ($l in $app.Links.GetEnumerator()) { Link-Config $l.Key $l.Value ($wasInstalled -or $app.AlwaysBackup) } }
   if ($app.Copies) { foreach ($c in $app.Copies.GetEnumerator()) { Copy-Config $c.Key $c.Value $wasInstalled } }
   if ($app.Post) { & $app.Post }
 }
