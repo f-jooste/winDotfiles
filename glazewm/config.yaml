@@ -261,7 +261,11 @@ keybindings:
 
   # Reload YASB.
   - commands: ['shell-exec yasbc reload']
-    bindings: ['alt+ctrl+r']
+    bindings: ['alt+ctrl+shift+r']
+
+  # Exit YASB.
+  - commands: ['shell-exec yasbc stop']
+    bindings: ['alt+ctrl+shift+e']
 
   # Redraw all windows.
   - commands: ['wm-redraw']
